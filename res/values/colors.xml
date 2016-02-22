@@ -1,0 +1,67 @@
+<resources>
+    <!-- DIALOG -->
+    <color name="progress_text">#ededed</color>
+    <color name="progress_bg">#727072</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="back_blue">#386FB2</color>
+    <color name="back_red">#D01E23</color>
+    <color name="back_red_dark">#D01E23</color>
+    <color name="back_gray_txt">#F0F0F0</color>
+    <color name="back_gray">#EEEFF0</color>
+    <color name="back_gray_lv">#F2F3F2</color>
+    <color name="back_gray_enabled">#C3C3C3</color>
+    <color name="back_gray_et">#E3E3E3</color>
+    <color name="back_gray_tr_50">#50EEEFF0</color>
+    <color name="back_gray_tr_20">#20EEEFF0</color>
+    <color name="back_yellow">#FCF2E3</color>
+    <color name="back_yellow_light">#FFDAA6</color>
+    <color name="txt_black">#333333</color>
+    <color name="txt_black_sub">#2A2A2A</color>
+    <color name="txt_black_gray">#51555A</color>
+    <color name="txt_black_gray_50">#505050</color>
+    <color name="txt_gray_e8">#E8E8E8</color>
+    <color name="txt_gray">#666666</color>
+    <color name="txt_gray_4">#444444</color>
+    <color name="txt_gray_6">#666666</color>
+    <color name="txt_gray_7">#777777</color>
+    <color name="txt_gray_8">#888888</color>
+    <color name="txt_gray_8c">#8c8c8c</color>
+    <color name="txt_gray_5A">#5A5A5A</color>
+    <color name="txt_gray_two">#656464</color>
+    <color name="txt_gray_menu">#9A9393</color>
+    <color name="txt_gray_90">#909090</color>
+    <color name="txt_red">#FB3E2A</color>
+    <color name="txt_red_menu">#B01E23</color>
+    <color name="txt_blue">#386fb2</color>
+    <color name="txt_menu_gray">#51555A</color>
+    <color name="txt_white">#FEFEFE</color>
+    <color name="line_gray">#EBEBEB</color>
+    <color name="line_gray_B5">#B5B5B5</color>
+    <color name="line_gray_menu">#E6E6E7</color>
+    <color name="line_gray_black">#D0D0D0</color>
+    <color name="line_gray_login">#DEDEDE</color>
+    <color name="line_blue">#789CC8</color>
+    <color name="btn_gray_F5">#F5F5F5</color>
+    <color name="line_gray_D7">#D7D7D7</color>
+    <color name="dot_red">#FB3E3A</color>
+    <color name="dot_yellow">#FAD980</color>
+    <color name="dot_gray">#AEB1B4</color>
+    <color name="dot_txt_gray">#93979D</color>
+    <color name="dot_orange">#E6931B</color>
+    <color name="txt_orange">#D78A0C</color>
+    
+    
+    <!-- zxing -->
+  <color name="contents_text">#ff000000</color>
+  <color name="encode_view">#ffffffff</color>
+  <color name="possible_result_points">#c0ffbd21</color> <!-- Android standard ICS color -->
+  <color name="result_minor_text">#ffc0c0c0</color>
+  <color name="result_points">#c099cc00</color> <!-- Android standard ICS color -->
+  <color name="result_text">#ffffffff</color>
+  <color name="result_view">#b0000000</color>
+  <color name="status_text">#ffffffff</color>
+  <color name="transparent">#00000000</color>
+  <color name="viewfinder_laser">#ffcc0000</color> <!-- Android standard ICS color -->
+  <color name="viewfinder_mask">#60000000</color>
+</resources>

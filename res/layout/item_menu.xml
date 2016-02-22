@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <group
+        android:checkableBehavior="single"
+        android:title="Home items">
+        
+        <item
+            android:id="@+id/nav_info"
+            android:icon="@drawable/ic_account_balance_black_24dp"
+            android:title="个人信息"/>
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_account_balance_black_24dp"
+            android:title="关于"/>
+        <item
+            android:id="@+id/nav_version"
+            android:icon="@drawable/ic_account_balance_black_24dp"
+            android:title="版本"/>
+        
+    </group>
+    
+    <item
+        android:title="Sub Title">
+        
+        <menu>
+            <item
+                android:id="@+id/sub_exit"
+                android:icon="@drawable/ic_power_settings_new_black_36dp"
+                android:title="退出应用" />
+
+            <item
+                android:id="@+id/sub_switch"
+                android:icon="@drawable/ic_settings_applications_black_36dp"
+                android:title="切换主题" />
+        </menu>
+    </item>
+
+</menu>

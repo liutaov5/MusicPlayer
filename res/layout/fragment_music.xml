@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+    
+    <ListView 
+        android:id="@+id/lv_music_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@color/back_gray"
+        android:scrollbars="none"
+        android:dividerHeight="0.5dp"/>
+    
+    <!-- 填充显示不出来的那部分以便将内容显示完整 -->
+    <LinearLayout 
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent">      
+    </LinearLayout>
+
+</LinearLayout>

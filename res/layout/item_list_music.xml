@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_background"
+    android:padding="@dimen/spacing_tiny" >
+
+    <ImageView
+        android:id="@+id/iv_picture"
+        android:layout_width="@dimen/spacing_huge"
+        android:layout_height="@dimen/spacing_huge"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:src="@drawable/ic_launcher"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/iv_picture"
+        android:layout_toRightOf="@id/iv_picture"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_small" >
+
+        <TextView
+            android:id="@+id/tv_song_name"
+            style="@style/text_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/iv_picture"
+            android:singleLine="true"
+            android:text="回家" />
+
+        <TextView
+            android:id="@+id/tv_song_artist"
+            style="@style/text_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:singleLine="true"
+            android:text="王杰" />
+    </LinearLayout>
+
+    <!--
+    TextView
+        android:id="@+id/tv_song_name"
+        style="@style/text_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/iv_picture"
+        android:layout_toRightOf="@id/iv_picture"
+        android:text="回家" 
+        android:layout_alignBaseline="@id/iv_picture"/>
+
+    <TextView
+        android:id="@+id/tv_song_artist"
+        style="@style/text_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/iv_picture"
+        android:layout_toRightOf="@id/iv_picture"
+        android:layout_below="@id/tv_song_name"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:text="王杰" /
+    -->
+
+    <ImageView
+        android:id="@+id/iv_music_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/spacing_tiny"
+        android:src="@drawable/ic_action_navigation_more_vert" />
+
+</RelativeLayout>

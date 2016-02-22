@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 字体大小 -->
+    <dimen name="font_normal">16sp</dimen>
+    <dimen name="font_small">12sp</dimen>
+    
+    <!-- 间距大小 -->
+    <dimen name="spacing_huge">60dp</dimen>
+    <dimen name="spacing_small">10dp</dimen>
+    <dimen name="spacing_tiny">5dp</dimen>
+    
+    <dimen name="fab_margin">0dp</dimen>
+    
+</resources>
