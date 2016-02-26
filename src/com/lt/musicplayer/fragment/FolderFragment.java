@@ -62,11 +62,12 @@ public class FolderFragment extends BaseFragment {
 	@Override
 	protected void updateList() {
 		if (mData != null) {
-			try {
-				mData.addAll(mFolderDao.findAllData());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			mData.clear();
+		}
+		try {
+			mData.addAll(mFolderDao.findAllData());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		if (mAdapter == null) {
 			mAdapter = new FolderAdapter(getActivity(), mData,

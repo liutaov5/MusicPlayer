@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity implements
 		mToolbar.setTitle("Music Player");
 		setSupportActionBar(mToolbar);
 		mToolbar.setNavigationIcon(R.drawable.ic_action_action_list);
+		
 		MusicFragment musicfragment = new MusicFragment();
 		ArtistFragment artistFragment = new ArtistFragment();
 		AlbumFragment albumFragment = new AlbumFragment();
@@ -133,7 +134,17 @@ public class MainActivity extends BaseActivity implements
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-
+		
+		case R.id.float_button:
+			if(mPlayService.isPause){
+				Toast.makeText(MainActivity.this, "继续", Toast.LENGTH_SHORT).show();
+				mPlayService.keepPlay();
+			}else{
+				Toast.makeText(MainActivity.this, "暂停", Toast.LENGTH_SHORT).show();
+				mPlayService.pauseMusic();
+			}
+			
+			break;
 		default:
 			break;
 		}

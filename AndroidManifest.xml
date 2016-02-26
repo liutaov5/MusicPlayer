@@ -32,6 +32,7 @@
         </activity>
         
         <service android:name=".service.ScanSongService"/>
+        <service android:name=".service.PlaySongService"/>
     </application>
 
 </manifest>

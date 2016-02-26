@@ -44,7 +44,8 @@ public class MusicFragment extends BaseFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Toast.makeText(getActivity(), mData.get(position).getUrl(), Toast.LENGTH_SHORT).show();;
+				Toast.makeText(getActivity(), mData.get(position).getUrl(), Toast.LENGTH_SHORT).show();
+				mPlayService.playMusic(mData.get(position).getUrl());
 			}
 		});
 		return view;

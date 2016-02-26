@@ -12,7 +12,11 @@ import com.lt.musicplayer.model.Song;
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * 
@@ -55,7 +59,15 @@ public class MusicActivity extends BaseActivity {
 
 	@Override
 	protected void initListener() {
-		
+		mMusicList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Toast.makeText(MusicActivity.this, mData.get(position).getUrl(), Toast.LENGTH_SHORT).show();
+				mPlayService.playMusic(mData.get(position).getUrl());
+			}
+		});
 	}
 	
 	@Override
