@@ -21,4 +21,6 @@
         android:scrollbars="none"
         android:dividerHeight="0.5dp"/>
     
+    <include layout="@layout/window_music_play"/>
+    
 </LinearLayout>

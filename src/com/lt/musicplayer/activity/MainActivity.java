@@ -11,10 +11,13 @@ import com.lt.musicplayer.fragment.AlbumFragment;
 import com.lt.musicplayer.fragment.ArtistFragment;
 import com.lt.musicplayer.fragment.FolderFragment;
 import com.lt.musicplayer.fragment.MusicFragment;
+import com.lt.musicplayer.service.PlaySongService;
 import com.lt.musicplayer.service.ScanSongService;
+import com.lt.musicplayer.utils.ToastUtils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
@@ -32,6 +35,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity implements
@@ -60,14 +65,36 @@ public class MainActivity extends BaseActivity implements
 		mNavigation = (NavigationView) findViewById(R.id.navigation_view);
 		mFragments = new ArrayList<Fragment>();
 		mUserHead = (ImageView) findViewById(R.id.iv_user_head);
+		mMusicImage = (ImageView) findViewById(R.id.iv_music_image);
+		mMusicName = (TextView) findViewById(R.id.tv_music_name);
+		mMusicArtist = (TextView) findViewById(R.id.tv_music_artist);
+		mMusicMore = (ImageView) findViewById(R.id.iv_music_list);
+		mMusicPlay = (ImageView) findViewById(R.id.iv_music_play);
+		mMusicNext = (ImageView) findViewById(R.id.iv_music_next);
+		mMusicProgress = (ProgressBar) findViewById(R.id.pb_music_progressbar);
+//		setView();
 	}
+
+	
+	// @Override
+	// protected void onResume() {
+	// super.onResume();
+	// if (!PlaySongService.isShow) {
+	// if(mPlayService!=null){
+	// mPlayService.showPopupWindow();
+	// }else{
+	//
+	// }
+	//
+	// }
+	// }
 
 	@Override
 	protected void initData() {
 		mToolbar.setTitle("Music Player");
 		setSupportActionBar(mToolbar);
 		mToolbar.setNavigationIcon(R.drawable.ic_action_action_list);
-		
+
 		MusicFragment musicfragment = new MusicFragment();
 		ArtistFragment artistFragment = new ArtistFragment();
 		AlbumFragment albumFragment = new AlbumFragment();
@@ -111,6 +138,7 @@ public class MainActivity extends BaseActivity implements
 		mNavigation.setNavigationItemSelectedListener(this);
 		mToolbar.setOnMenuItemClickListener(this);
 		mFloatButton.setOnClickListener(this);
+		setListener();
 		// mToolbar.setNavigationOnClickListener(new OnClickListener() {
 		//
 		// @Override
@@ -134,16 +162,18 @@ public class MainActivity extends BaseActivity implements
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		
+
 		case R.id.float_button:
-			if(mPlayService.isPause){
-				Toast.makeText(MainActivity.this, "继续", Toast.LENGTH_SHORT).show();
+			if (mPlayService.isPause) {
+				Toast.makeText(MainActivity.this, "继续", Toast.LENGTH_SHORT)
+						.show();
 				mPlayService.keepPlay();
-			}else{
-				Toast.makeText(MainActivity.this, "暂停", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(MainActivity.this, "暂停", Toast.LENGTH_SHORT)
+						.show();
 				mPlayService.pauseMusic();
 			}
-			
+
 			break;
 		default:
 			break;
@@ -166,7 +196,7 @@ public class MainActivity extends BaseActivity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		int id = item.getItemId();
-		//ToolBar的NavigationIcon的点击事件
+		// ToolBar的NavigationIcon的点击事件
 		if (id == android.R.id.home) {
 			mDrawer.openDrawer(GravityCompat.START);
 			return true;
@@ -180,13 +210,16 @@ public class MainActivity extends BaseActivity implements
 		return true;
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			exitBy2Click();
-		}
-		return false;
-	}
+	// /**
+	// * 返回键监听
+	// */
+	// @Override
+	// public boolean onKeyDown(int keyCode, KeyEvent event) {
+	// if (keyCode == KeyEvent.KEYCODE_BACK) {
+	// exitBy2Click();
+	// }
+	// return false;
+	// }
 
 	/**
 	 * 双击退出函数
@@ -209,6 +242,14 @@ public class MainActivity extends BaseActivity implements
 		} else {
 			closeApp();
 		}
+	}
+
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		initAlbumPicture();
+		setView();
 	}
 
 }

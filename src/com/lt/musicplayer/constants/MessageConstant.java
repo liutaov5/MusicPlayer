@@ -8,4 +8,14 @@ public class MessageConstant {
 	public final static String FOLDER_PATH="folder_path";
 	public final static String SEND_TYPE="send_type";
 	public final static String SEND_CONTENT="send_content";
+	
+	public final static String UPDATE_VIEW="update_view";
+	public final static String UPDATE_PROGRESS="update_progress";
+	public final static String CURRENT_POSITION="current_position";
+	public final static String ACTION_PLAY="action_play";
+	public final static String ACTION_STOP="action_stop";
+	public final static String ACTION_KEEP_PLAY="action_keep_play";
+	public final static String ACTION_PAUSE="action_pause";
+	public final static String ACTION_NEXT_PLAY="action_next_play";
+	public final static String ACTION_PRE_PLAY="action_pre_play";
 }

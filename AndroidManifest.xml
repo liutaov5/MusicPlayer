@@ -9,6 +9,8 @@
     
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>  
 
     <application
         android:allowBackup="true"
@@ -16,8 +18,9 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity 
-            android:name="com.lt.musicplayer.activity.MainActivity"
-            android:label="@string/app_name">
+            android:name="com.lt.musicplayer.activity.LauncherActivity"
+            android:label="@string/app_name"
+            android:theme="@style/LauncherTheme">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -26,6 +29,13 @@
         
         <activity
             android:name="com.lt.musicplayer.activity.MusicActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        
+        <activity
+            android:name="com.lt.musicplayer.activity.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" >

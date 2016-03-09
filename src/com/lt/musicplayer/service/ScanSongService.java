@@ -154,6 +154,10 @@ public class ScanSongService extends IntentService {
 				album.setCount(songDao.findData("album", name).size());
 				album.setArtist(songDao.findData("album", name).get(0)
 						.getArtist());
+				album.setArtist(songDao.findData("album", name).get(0)
+						.getArtist());
+				album.setId(songDao.findData("album", name).get(0)
+						.getId());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

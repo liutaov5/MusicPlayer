@@ -8,6 +8,7 @@ import com.lt.musicplayer.adapter.MusicAdapter;
 import com.lt.musicplayer.manager.SongManager;
 import com.lt.musicplayer.model.Song;
 import com.lt.musicplayer.service.ScanSongService;
+import com.lt.musicplayer.utils.ToastUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -44,8 +45,12 @@ public class MusicFragment extends BaseFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Toast.makeText(getActivity(), mData.get(position).getUrl(), Toast.LENGTH_SHORT).show();
 				mPlayService.playMusic(mData.get(position).getUrl());
+				SongManager songManager=SongManager.getInstance(getActivity());
+				songManager.clearSong();
+				for(Song song:mData){
+					songManager.addSong(song);
+				}	
 			}
 		});
 		return view;

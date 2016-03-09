@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lt.musicplayer.R;
+import com.lt.musicplayer.activity.BaseActivity;
 import com.lt.musicplayer.activity.MusicActivity;
 import com.lt.musicplayer.adapter.ArtistAdapter;
 import com.lt.musicplayer.constants.MessageConstant;
 import com.lt.musicplayer.db.ArtistDao;
 import com.lt.musicplayer.model.Artist;
+import com.lt.musicplayer.service.PlaySongService;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,6 +48,7 @@ public class ArtistFragment extends BaseFragment{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				PlaySongService.isInside=true;
 				Intent intent=new Intent(getActivity(), MusicActivity.class);
 				intent.putExtra(MessageConstant.MUSIC_TITLE, mData.get(position).getArtist());
 				intent.putExtra(MessageConstant.SEND_TYPE, "artist");

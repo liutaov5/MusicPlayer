@@ -17,27 +17,28 @@ public class SongManager {
 	private static SongManager sSongManager;
 	private SongDao mSongDao;
 	private Context mContext;
-	
-	private SongManager(Context context){
-		mContext=context;
-		mSongMap=new SparseArray<Song>();
-		mSongList=new ArrayList<Song>();
-		mSongDao=new SongDao(mContext);
+	private String mCurrentUrl;
+
+	private SongManager(Context context) {
+		mContext = context;
+		mSongMap = new SparseArray<Song>();
+		mSongList = new ArrayList<Song>();
+		mSongDao = new SongDao(mContext);
 	}
-	
-	public static SongManager getInstance(Context context){
-		if(sSongManager==null){
-			sSongManager=new SongManager(context);
+
+	public static SongManager getInstance(Context context) {
+		if (sSongManager == null) {
+			sSongManager = new SongManager(context);
 		}
 		return sSongManager;
 	}
-	
-	public void addSong(Song song){
+
+	public void addSong(Song song) {
 		mSongMap.put(song.getId(), song);
 		mSongList.add(song);
 	}
-	
-	public void clearSong(){
+
+	public void clearSong() {
 		mSongMap.clear();
 		mSongList.clear();
 	}
@@ -57,41 +58,65 @@ public class SongManager {
 	public void setmSongList(List<Song> mSongList) {
 		this.mSongList = mSongList;
 	}
-	
-	public void saveAllSong(){
+
+	public void saveAllSong() {
 		try {
 			mSongDao.createOrUpdateDatas(mSongList);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public List<Song> getAllSong(){
-		if(mSongList.size()==0){
+
+	public List<Song> getAllSong() {
+		if (mSongList.size() == 0) {
 			try {
 				mSongList.addAll(mSongDao.findAllData());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}	
-		if(mSongMap.size()==0){
-			for(Song song:mSongList){
+		}
+		if (mSongMap.size() == 0) {
+			for (Song song : mSongList) {
 				mSongMap.put(song.getId(), song);
 			}
 		}
 		return mSongList;
 	}
-	
-	public List<String> searchArtist(){
+
+	public String getNextSongUrl() {
+
+		if (mSongList.size() == 0) {
+			return null;
+		}
+
+		for (int i = 0; i < mSongList.size(); i++) {
+			if (mCurrentUrl.equals(mSongList.get(i).getUrl())) {
+				return i + 1 == mSongList.size() ? mSongList.get(0).getUrl()
+						: mSongList.get(i + 1).getUrl();
+			}
+		}
+
+		return mSongList.get(0).getUrl();
+	}
+
+	public List<String> searchArtist() {
 		return mSongDao.searchColumn("artist");
 	}
-	
-	public List<String> searchAlbum(){
+
+	public List<String> searchAlbum() {
 		return mSongDao.searchColumn("album");
 	}
-	
-	public List<String> searchUrl(){
+
+	public List<String> searchUrl() {
 		return mSongDao.searchColumn("url");
 	}
-	
+
+	public String getmCurrentUrl() {
+		return mCurrentUrl;
+	}
+
+	public void setmCurrentUrl(String mCurrentUrl) {
+		this.mCurrentUrl = mCurrentUrl;
+	}
+
 }

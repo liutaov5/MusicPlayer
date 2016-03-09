@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.lt.musicplayer.R;
 import com.lt.musicplayer.model.Song;
+import com.lt.musicplayer.utils.ToastUtils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -45,7 +46,7 @@ public class MusicAdapter extends MyBaseAdapter<Song> {
 
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(mContext, ((Song)v.getTag()).getId()+"", Toast.LENGTH_SHORT).show();
+
 			}
 		});
 		return convertView;

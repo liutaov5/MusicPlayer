@@ -2,6 +2,9 @@
     <!-- DIALOG -->
     <color name="progress_text">#ededed</color>
     <color name="progress_bg">#727072</color>
+    <color name="red">#900</color>
+    <color name="green">#090</color>
+    <color name="blue">#009</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="back_blue">#386FB2</color>

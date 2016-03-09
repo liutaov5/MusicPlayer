@@ -8,7 +8,11 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.Drawable;
-
+/**
+ * 自定义的圆形图片
+ * @author taoliu
+ * create at Mar 1, 2016
+ */
 public class CircleDrawable extends Drawable {
 
 	private Paint mPaint;

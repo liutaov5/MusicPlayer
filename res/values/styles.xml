@@ -2,25 +2,27 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/accent_material_dark</item>
-    	<item name="colorPrimaryDark">@color/accent_material_light</item>
-   	 	<item name="android:windowBackground">@color/dim_foreground_material_dark</item>
-    	<item name="colorAccent">#3498db</item>
+        <item name="colorPrimaryDark">@color/accent_material_light</item>
+        <item name="android:windowBackground">@color/dim_foreground_material_dark</item>
+        <item name="colorAccent">#3498db</item>
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="LauncherTheme" parent="android:style/Theme.Black.NoTitleBar.Fullscreen" type="text/css">
+        <item name="android:windowIsTranslucent"> true </item>
     </style>
     
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme"></style>
+
     <style name="text_normal">
         <item name="android:textSize">@dimen/font_normal</item>
         <item name="android:textColor">@color/txt_black</item>
     </style>
-    
+
     <style name="text_small">
         <item name="android:textSize">@dimen/font_small</item>
         <item name="android:textColor">@color/txt_gray</item>

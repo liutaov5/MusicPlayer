@@ -1,8 +1,9 @@
 <resources>
 
-    
-    <style name="AppTheme" parent="AppBaseTheme">
-        
+    <style name="AppTheme" parent="AppBaseTheme"></style>
+
+    <style name="LauncherTheme" parent="android:style/Theme.Black.NoTitleBar.Fullscreen" type="text/css">
+        <item name="android:windowIsTranslucent"> true </item>
     </style>
 
 </resources>

@@ -14,11 +14,12 @@ import com.j256.ormlite.table.TableUtils;
 import com.lt.musicplayer.model.Album;
 import com.lt.musicplayer.model.Artist;
 import com.lt.musicplayer.model.Folder;
+import com.lt.musicplayer.model.LastSong;
 import com.lt.musicplayer.model.Song;
 
 public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 
-	private static final int DB_VERSION = 20;
+	private static final int DB_VERSION = 23;
 	private static final String DB_NAME = "music-player.db";
 	private static DataBaseHelper sDataBaseHelper;
 //	private Map<String, Dao> daos = new HashMap<String, Dao>();
@@ -35,6 +36,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable(connectionSource, Artist.class);
 			TableUtils.createTable(connectionSource, Album.class);
 			TableUtils.createTable(connectionSource, Folder.class);
+			TableUtils.createTable(connectionSource, LastSong.class);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -48,6 +50,7 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable(connectionSource, Artist.class, true);
 			TableUtils.dropTable(connectionSource, Album.class, true);
 			TableUtils.dropTable(connectionSource, Folder.class, true);
+			TableUtils.dropTable(connectionSource, LastSong.class, true);
 			onCreate(database, connectionSource);
 		} catch (SQLException e) {
 			e.printStackTrace();

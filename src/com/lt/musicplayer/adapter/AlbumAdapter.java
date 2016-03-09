@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.lt.musicplayer.R;
 import com.lt.musicplayer.model.Album;
+import com.lt.musicplayer.utils.MusicUtils;
 
 /**
  * 
@@ -47,6 +48,7 @@ public class AlbumAdapter extends MyBaseAdapter<Album> {
 		holder.count.setText(album.getCount() + "首 " + album.getArtist());
 		holder.more.setTag(album);
 		holder.picture.setVisibility(View.VISIBLE);
+		holder.picture.setImageBitmap(MusicUtils.getAlbumBitmap(mContext, album.getId(), album.getAlbumId(), true, false));
 		holder.more.setOnClickListener(new OnClickListener() {
 
 			@Override

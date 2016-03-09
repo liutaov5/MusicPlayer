@@ -41,6 +41,9 @@
         app:layout_anchor="@id/viewpager"
         app:layout_anchorGravity="bottom|end|right"
         android:src="@drawable/play"
-        app:borderWidth="0dp" />
+        app:borderWidth="0dp" 
+        android:visibility="gone"/>
+    
+    <include layout="@layout/window_music_play"/>
 
 </android.support.design.widget.CoordinatorLayout>

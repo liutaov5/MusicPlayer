@@ -1,7 +1,10 @@
 package com.lt.musicplayer.fragment;
 
+import com.lt.musicplayer.db.AlbumDao;
+import com.lt.musicplayer.model.Album;
 import com.lt.musicplayer.service.PlaySongService;
 import com.lt.musicplayer.service.ScanSongService;
+import com.lt.musicplayer.utils.MusicUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -21,7 +24,7 @@ public abstract class BaseFragment extends Fragment{
 		
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-			
+			mPlayService=null;
 		}
 		
 		@Override
@@ -51,6 +54,14 @@ public abstract class BaseFragment extends Fragment{
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			updateList();
+			AlbumDao dao=new AlbumDao(getActivity());
+			try {
+				for(Album album:dao.findAllData()){
+					MusicUtils.getAlbumBitmap(getActivity(), album.getId(), album.getAlbumId(), true, true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	};
 
@@ -58,11 +69,18 @@ public abstract class BaseFragment extends Fragment{
 	public void onDestroy() {
 		super.onDestroy();
 		LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
+		getActivity().unbindService(playConn);
 	}
 	
 	/**
 	 * 列表更新
 	 */
 	protected abstract void updateList();
+
+	@Override
+	public void startActivity(Intent intent) {
+		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        super.startActivity(intent);
+	}
 	
 }

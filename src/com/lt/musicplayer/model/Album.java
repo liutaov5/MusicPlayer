@@ -12,6 +12,12 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Album {
 
 	/**
+	 * 歌曲id
+	 */
+	@DatabaseField(columnName="id")
+	private int id;
+	
+	/**
 	 * 专辑
 	 */
 	@DatabaseField(columnName = "album",id=true)
@@ -78,6 +84,14 @@ public class Album {
 
 	public void setArtist(String artist) {
 		this.artist = artist;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

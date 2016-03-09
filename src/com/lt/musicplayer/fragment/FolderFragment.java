@@ -13,11 +13,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.lt.musicplayer.R;
+import com.lt.musicplayer.activity.BaseActivity;
 import com.lt.musicplayer.activity.MusicActivity;
 import com.lt.musicplayer.adapter.FolderAdapter;
 import com.lt.musicplayer.constants.MessageConstant;
 import com.lt.musicplayer.db.FolderDao;
 import com.lt.musicplayer.model.Folder;
+import com.lt.musicplayer.service.PlaySongService;
 
 /**
  * 
@@ -49,6 +51,7 @@ public class FolderFragment extends BaseFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				PlaySongService.isInside=true;
 				Intent intent=new Intent(getActivity(), MusicActivity.class);
 				intent.putExtra(MessageConstant.MUSIC_TITLE, mData.get(position).getFolder());
 				intent.putExtra(MessageConstant.SEND_TYPE, "folderPath");
