@@ -20,6 +20,8 @@ import android.util.SparseArray;
 
 public class MusicUtils {
 
+	private static Boolean isLoading=true;
+	
 	private static final HashMap<Long, Bitmap> sArtCache = new HashMap<Long, Bitmap>();
 	
 	// 获取专辑封面的Uri
@@ -145,7 +147,7 @@ public class MusicUtils {
 				/** 我们的目标是在你N pixel的画面上显示。 所以需要调用computeSampleSize得到图片缩放的比例 **/
 				/** 这里的target为800是根据默认专辑图片大小决定的，800只是测试数字但是试验后发现完美的结合 **/
 				if (small) {
-					options.inSampleSize = computeSampleSize(options, UnitConverterUtils.dp2px(context, 50));
+					options.inSampleSize = computeSampleSize(options, UnitConverterUtils.dpToPx(context, 50));
 				} else {
 					options.inSampleSize = computeSampleSize(options, 600);
 				}
@@ -208,5 +210,13 @@ public class MusicUtils {
 			}
 		}
 		return candidate;
+	}
+
+	public static Boolean getIsLoading() {
+		return isLoading;
+	}
+
+	public static void setIsLoading(Boolean isLoading) {
+		MusicUtils.isLoading = isLoading;
 	}
 }

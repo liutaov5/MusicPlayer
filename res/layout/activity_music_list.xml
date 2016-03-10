@@ -2,25 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical" >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary" />
-	
-    <ListView 
+
+    <ListView
         android:id="@+id/lv_music_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="@color/back_gray"
-        
-        android:scrollbars="none"
-        android:dividerHeight="0.5dp"/>
-    
-    <include layout="@layout/window_music_play"/>
-    
+        android:dividerHeight="0.5dp"
+        android:scrollbars="none" />
+
+    <include layout="@layout/window_music_play" />
+
 </LinearLayout>

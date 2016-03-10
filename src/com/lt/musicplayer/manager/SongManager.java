@@ -83,8 +83,30 @@ public class SongManager {
 		return mSongList;
 	}
 
+	/**
+	 * 获取下一首歌的路径
+	 * @return
+	 */
 	public String getNextSongUrl() {
 
+		if (mSongList.size() == 0) {
+			return null;
+		}
+
+		for (int i = 0; i < mSongList.size(); i++) {
+			if (mCurrentUrl.equals(mSongList.get(i).getUrl())) {
+				return i + 1 == mSongList.size() ? mSongList.get(0).getUrl()
+						: mSongList.get(i - 1).getUrl();
+			}
+		}
+
+		return mSongList.get(0).getUrl();
+	}
+	/**
+	 * 获取前一首歌的路径
+	 * @return
+	 */
+	public String getPreSongUrl(){
 		if (mSongList.size() == 0) {
 			return null;
 		}

@@ -3,12 +3,10 @@ package com.lt.musicplayer.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.lt.musicplayer.R;
 import com.lt.musicplayer.constants.MessageConstant;
 import com.lt.musicplayer.db.AlbumDao;
-import com.lt.musicplayer.db.LastSongDao;
+import com.lt.musicplayer.interfaces.OnMusicStatusChangeListener;
 import com.lt.musicplayer.model.Album;
-import com.lt.musicplayer.model.LastSong;
 import com.lt.musicplayer.service.PlaySongService;
 import com.lt.musicplayer.utils.MusicUtils;
 
@@ -19,19 +17,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnErrorListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * activity基类
@@ -53,13 +42,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 	// public static Boolean isInside=false;
 	//
 	// protected static View mView = null;
-	protected ImageView mMusicImage;
-	protected TextView mMusicName;
-	protected TextView mMusicArtist;
-	protected ImageView mMusicMore;
-	protected ImageView mMusicPlay;
-	protected ImageView mMusicNext;
-	protected ProgressBar mMusicProgress;
+//	protected ImageView mMusicImage;
+//	protected TextView mMusicName;
+//	protected TextView mMusicArtist;
+//	protected ImageView mMusicMore;
+//	protected ImageView mMusicPlay;
+//	protected ImageView mMusicNext;
+//	protected ProgressBar mMusicProgress;
+	
+	private OnMusicStatusChangeListener musicStatusChangeListener;
 	/**
 	 * 播放服务
 	 */
@@ -75,12 +66,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			PlaySongService.MyBinder binder = (PlaySongService.MyBinder) service;
 			mPlayService = binder.getService();
-			if (!PlaySongService.isShow) {
-				if (mPlayService != null) {
-					mPlayService.showPopupWindow();
-				} else {
-				}
-			}
 		}
 	};
 
@@ -137,7 +122,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 	}
 	
 	/**
-	 * 用于更新悬浮窗
+	 * 用于更新播放界面
 	 */
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -148,26 +133,32 @@ public abstract class BaseActivity extends AppCompatActivity {
 				int currentPosition = intent.getIntExtra(
 						MessageConstant.CURRENT_POSITION, 0);
 				// setView();
-				updateProgress(currentPosition);
+				musicStatusChangeListener.onMusicUpdateProgress(currentPosition);
 				break;
 			case MessageConstant.ACTION_PLAY:
-				mMusicPlay.setImageResource(R.drawable.statusbar_close);
-				setView();
+				musicStatusChangeListener.onMusicPlay();
+//				mMusicPlay.setImageResource(R.drawable.statusbar_close);
+//				setView();
 				break;
 			case MessageConstant.ACTION_PAUSE:
-				mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+				musicStatusChangeListener.onMusicPause();
+//				mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
 				break;
 			case MessageConstant.ACTION_NEXT_PLAY:
-				setView();
+				musicStatusChangeListener.onMusicNext();
+//				setView();
 				break;
 			case MessageConstant.ACTION_PRE_PLAY:
-				setView();
+				musicStatusChangeListener.onMusicPre();
+//				setView();
 				break;
 			case MessageConstant.ACTION_STOP:
-				mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+				musicStatusChangeListener.onMusicStop();
+//				mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
 				break;
 			case MessageConstant.ACTION_KEEP_PLAY:
-				mMusicPlay.setImageResource(R.drawable.statusbar_close);
+				musicStatusChangeListener.onMusicKeep();
+//				mMusicPlay.setImageResource(R.drawable.statusbar_close);
 				break;
 			default:
 				break;
@@ -265,56 +256,56 @@ public abstract class BaseActivity extends AppCompatActivity {
 	/**
 	 * 设置最下方播放条目的view
 	 */
-	protected void setView() {
+//	protected void setView() {
+//
+//		LastSongDao lastSongDao = new LastSongDao(this);
+//		List<LastSong> song;
+//		try {
+//			song = lastSongDao.findAllData();
+//			if (song != null && song.size() > 0) {
+//				mMusicArtist.setText(song.get(0).getArtist());
+//				mMusicName.setText(song.get(0).getTitle());
+//				mMusicImage.setImageBitmap(MusicUtils.getAlbumBitmap(mContext,
+//						song.get(0).getId(), song.get(0).getAlbumId(), true,
+//						true));
+//			}
+//		} catch (Exception e1) {
+//			e1.printStackTrace();
+//		}
+//		//
+//		if (PlaySongService.isPause != null && PlaySongService.isPause) {
+//			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+//		} else {
+//			mMusicPlay.setImageResource(R.drawable.statusbar_close);
+//		}
+//
+//	}
 
-		LastSongDao lastSongDao = new LastSongDao(this);
-		List<LastSong> song;
-		try {
-			song = lastSongDao.findAllData();
-			if (song != null && song.size() > 0) {
-				mMusicArtist.setText(song.get(0).getArtist());
-				mMusicName.setText(song.get(0).getTitle());
-				mMusicImage.setImageBitmap(MusicUtils.getAlbumBitmap(mContext,
-						song.get(0).getId(), song.get(0).getAlbumId(), true,
-						true));
-			}
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		//
-		if (mPlayService.isPause != null && mPlayService.isPause) {
-			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
-		} else {
-			mMusicPlay.setImageResource(R.drawable.statusbar_close);
-		}
-
-	}
-
-	private void updateProgress(int position) {
-		mMusicProgress.setProgress(position);
-	}
-
-	protected void setListener() {
-		mMusicPlay.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (mPlayService.isPause) {
-					mPlayService.keepPlay();
-				} else {
-					mPlayService.pauseMusic();
-				}
-			}
-		});
-
-		mMusicNext.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				mPlayService.playNext();
-			}
-		});
-	}
+//	private void updateProgress(int position) {
+//		mMusicProgress.setProgress(position);
+//	}
+//
+//	protected void setListener() {
+//		mMusicPlay.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				if (mPlayService.isPause) {
+//					mPlayService.keepPlay();
+//				} else {
+//					mPlayService.pauseMusic();
+//				}
+//			}
+//		});
+//
+//		mMusicNext.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				mPlayService.playNext();
+//			}
+//		});
+//	}
 
 	protected void initAlbumPicture() {
 		AlbumDao dao = new AlbumDao(mContext);
@@ -327,6 +318,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 			e.printStackTrace();
 		}
 
+	}
+
+	public OnMusicStatusChangeListener getMusicStatusChangeListener() {
+		return musicStatusChangeListener;
+	}
+
+	public void setMusicStatusChangeListener(
+			OnMusicStatusChangeListener musicStatusChangeListener) {
+		this.musicStatusChangeListener = musicStatusChangeListener;
 	}
 
 	

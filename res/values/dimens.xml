@@ -10,5 +10,6 @@
     <dimen name="spacing_tiny">5dp</dimen>
     
     <dimen name="fab_margin">0dp</dimen>
+    <dimen name="spacing_play_button">20dp</dimen>
     
 </resources>

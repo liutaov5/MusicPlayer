@@ -18,3 +18,61 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontpreverify
+-repackageclasses ''
+-allowaccessmodification
+-optimizations !code/simplification/arithmetic
+-keepattributes *Annotation*
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgentHelper  
+-keep public class * extends android.preference.Preference  
+
+-keep public class * extends android.view.View {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+    public void set*(...);
+}
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+-keepclassmembers class * implements android.os.Parcelable {
+    static android.os.Parcelable$Creator CREATOR;
+}
+-keepclassmembers class **.R$* {
+    public static <fields>;
+}
+
+-keepclassmembers class * {
+@com.j256.ormlite.field.DatabaseField *;
+}
+
+-keepattributes SourceFile,LineNumberTable,Signature
+
+-libraryjars libs/android-support-v4.jar 
+-libraryjars libs/android-support-design.jar
+-libraryjars libs/ormlite-android-4.48.jar
+-libraryjars libs/ormlite-core-4.48.jar
+
+-dontwarn android.support.v4.**
+-dontwarn android.support.design.**
+-dontwarn android.support.v7.**
+-dontwarn com.j256.ormlite.**
+
+-keep class android.support.v4.** {*;}
+-keep class android.support.design.** {*;}
+-keep class android.support.v7.** {*;}
+-keep class com.j256.ormlite.** {*;}
+-keepclassmembers class com.j256.** { *; }
+-keep enum com.j256.**
+-keepclassmembers enum com.j256.** { *; }
+-keep interface com.j256.**
+-keepclassmembers interface com.j256.** { *; }

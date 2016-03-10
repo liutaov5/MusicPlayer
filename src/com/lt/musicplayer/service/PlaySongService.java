@@ -48,43 +48,44 @@ public class PlaySongService extends Service {
 	private Boolean isFirstStart = true;
 	private static Boolean isKeepPlay = false;
 	private AudioManager mAudioManager;
-	public static WindowManager mWindowManager = null;
+//	public static WindowManager mWindowManager = null;
+//	public static Boolean isLoading=true;
 
-	/**
-	 * 悬浮窗是否显示
-	 */
-	public static Boolean isShow = false;
-	/**
-	 * 用于判断是否在切换界面需要隐藏悬浮窗
-	 */
-	public static Boolean isInside = false;
-
-	private static View mView = null;
-	private static ImageView mMusicImage;
-	private static TextView mMusicName;
-	private static TextView mMusicArtist;
-	private static ImageView mMusicList;
-	private static ImageView mMusicPlay;
-	private static ImageView mMusicNext;
-	private static ProgressBar mMusicProgress;
+//	/**
+//	 * 悬浮窗是否显示
+//	 */
+//	public static Boolean isShow = false;
+//	/**
+//	 * 用于判断是否在切换界面需要隐藏悬浮窗
+//	 */
+//	public static Boolean isInside = false;
+//
+//	private static View mView = null;
+//	private static ImageView mMusicImage;
+//	private static TextView mMusicName;
+//	private static TextView mMusicArtist;
+//	private static ImageView mMusicList;
+//	private static ImageView mMusicPlay;
+//	private static ImageView mMusicNext;
+//	private static ProgressBar mMusicProgress;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-		mWindowManager = (WindowManager) getApplicationContext()
-				.getSystemService(Context.WINDOW_SERVICE);
-		mView = LayoutInflater.from(getApplicationContext()).inflate(
-				R.layout.window_music_play, null);
-		mMusicImage = (ImageView) mView.findViewById(R.id.iv_music_image);
-		mMusicName = (TextView) mView.findViewById(R.id.tv_music_name);
-		mMusicArtist = (TextView) mView.findViewById(R.id.tv_music_artist);
-		mMusicList = (ImageView) mView.findViewById(R.id.iv_music_list);
-		mMusicPlay = (ImageView) mView.findViewById(R.id.iv_music_play);
-		mMusicNext = (ImageView) mView.findViewById(R.id.iv_music_next);
-		mMusicProgress = (ProgressBar) mView
-				.findViewById(R.id.pb_music_progressbar);
+//		mWindowManager = (WindowManager) getApplicationContext()
+//				.getSystemService(Context.WINDOW_SERVICE);
+//		mView = LayoutInflater.from(getApplicationContext()).inflate(
+//				R.layout.window_music_play, null);
+//		mMusicImage = (ImageView) mView.findViewById(R.id.iv_music_image);
+//		mMusicName = (TextView) mView.findViewById(R.id.tv_music_name);
+//		mMusicArtist = (TextView) mView.findViewById(R.id.tv_music_artist);
+//		mMusicList = (ImageView) mView.findViewById(R.id.iv_music_list);
+//		mMusicPlay = (ImageView) mView.findViewById(R.id.iv_music_play);
+//		mMusicNext = (ImageView) mView.findViewById(R.id.iv_music_next);
+//		mMusicProgress = (ProgressBar) mView
+//				.findViewById(R.id.pb_music_progressbar);
 
 	}
 
@@ -98,10 +99,21 @@ public class PlaySongService extends Service {
 				if (mediaPlay == null) {
 					return;
 				}
-
+				
 				int currentPosition = mediaPlay.getCurrentPosition();
 				int time = mediaPlay.getDuration();
-				mMusicProgress.setProgress(currentPosition * 1000 / time);
+//				mMusicProgress.setProgress(currentPosition * 1000 / time);
+				LastSongDao lastSongDao = new LastSongDao(PlaySongService.this);
+				List<LastSong> song;
+				try {
+					song = lastSongDao.findAllData();
+					if (song != null && song.size() > 0) {
+						song.get(0).setProgress(currentPosition);
+					}
+					lastSongDao.createOrUpdateDatas(song);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 				Intent intent = new Intent(MessageConstant.UPDATE_PROGRESS);
 				intent.putExtra(MessageConstant.CURRENT_POSITION,
 						currentPosition * 1000 / time);
@@ -163,8 +175,8 @@ public class PlaySongService extends Service {
 				Toast.makeText(this, "获取焦点失败", Toast.LENGTH_SHORT).show();
 				return;
 			}
+			
 			if (!isFirstPlay && isKeepPlay && !isFirstStart) {
-				isFirstPlay = true;
 				isKeepPlay = false;
 				// 继续上次播放位置播放
 				LastSongDao lastSongDao = new LastSongDao(this);
@@ -182,7 +194,7 @@ public class PlaySongService extends Service {
 			if (isFirstStart) {
 				isFirstStart = false;
 			}
-
+			isFirstPlay = true;
 			mediaPlay.start();
 			sendMusicBroadcast(MessageConstant.ACTION_PLAY);
 			saveLastSong(path);
@@ -190,7 +202,7 @@ public class PlaySongService extends Service {
 
 			// setView();
 			isPause = false;
-			mMusicPlay.setImageResource(R.drawable.statusbar_close);
+//			mMusicPlay.setImageResource(R.drawable.statusbar_close);
 			// 更新进度条
 			new Thread() {
 
@@ -218,6 +230,14 @@ public class PlaySongService extends Service {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 滚动进度条播发
+	 * @param position
+	 */
+	public void setProgress(int position){
+		mediaPlay.seekTo(position*mediaPlay.getDuration()/1000);
+	}
 
 	/**
 	 * 发送广播
@@ -241,7 +261,7 @@ public class PlaySongService extends Service {
 		if (!isPause && mediaPlay.isPlaying()) {
 			mediaPlay.pause();
 			isPause = true;
-			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+//			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
 		}
 	}
 
@@ -272,7 +292,7 @@ public class PlaySongService extends Service {
 		if (isPause && !mediaPlay.isPlaying()) {
 			mediaPlay.start();
 			isPause = false;
-			mMusicPlay.setImageResource(R.drawable.statusbar_close);
+//			mMusicPlay.setImageResource(R.drawable.statusbar_close);
 		}
 	}
 
@@ -296,6 +316,8 @@ public class PlaySongService extends Service {
 			return;
 		}
 		sendMusicBroadcast(MessageConstant.ACTION_PRE_PLAY);
+		String path = SongManager.getInstance(this).getPreSongUrl();
+		playMusic(path);
 	}
 
 	/**
@@ -344,6 +366,7 @@ public class PlaySongService extends Service {
 			lastSong.setAlbum(songs.get(0).getAlbum());
 			lastSong.setId(songs.get(0).getId());
 			lastSong.setUrl(songs.get(0).getUrl());
+			lastSong.setDuration(songs.get(0).getDuration());
 			LastSongDao lastSongDao = new LastSongDao(this);
 			lastSongDao.deleteAll();
 			lastSongDao.createOrUpdateData(lastSong);
@@ -375,61 +398,61 @@ public class PlaySongService extends Service {
 		// isShow = true;
 	}
 
-	/**
-	 * 隐藏悬浮窗
-	 */
-	public void hidePopupWindow() {
-		// if (isShow) {
-		// mWindowManager.removeView(mView);
-		// isShow = false;
-		// }
-	}
-
-	/**
-	 * 设置最下方播放条目的view
-	 */
-	private void setView() {
-
-		LastSongDao lastSongDao = new LastSongDao(this);
-		List<LastSong> song;
-		try {
-			song = lastSongDao.findAllData();
-			if (song != null && song.size() > 0) {
-				mMusicArtist.setText(song.get(0).getArtist());
-				mMusicName.setText(song.get(0).getTitle());
-			}
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
-		if (isPause) {
-			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
-		} else {
-			mMusicPlay.setImageResource(R.drawable.statusbar_close);
-		}
-
-	}
+//	/**
+//	 * 隐藏悬浮窗
+//	 */
+//	public void hidePopupWindow() {
+//		// if (isShow) {
+//		// mWindowManager.removeView(mView);
+//		// isShow = false;
+//		// }
+//	}
+//
+//	/**
+//	 * 设置最下方播放条目的view
+//	 */
+//	private void setView() {
+//
+//		LastSongDao lastSongDao = new LastSongDao(this);
+//		List<LastSong> song;
+//		try {
+//			song = lastSongDao.findAllData();
+//			if (song != null && song.size() > 0) {
+//				mMusicArtist.setText(song.get(0).getArtist());
+//				mMusicName.setText(song.get(0).getTitle());
+//			}
+//		} catch (Exception e1) {
+//			e1.printStackTrace();
+//		}
+//
+//		if (isPause) {
+//			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+//		} else {
+//			mMusicPlay.setImageResource(R.drawable.statusbar_close);
+//		}
+//
+//	}
 
 	private void setListener() {
-		mMusicPlay.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (isPause) {
-					keepPlay();
-				} else {
-					pauseMusic();
-				}
-			}
-		});
-
-		mMusicNext.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				playNext();
-			}
-		});
+//		mMusicPlay.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				if (isPause) {
+//					keepPlay();
+//				} else {
+//					pauseMusic();
+//				}
+//			}
+//		});
+//
+//		mMusicNext.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				playNext();
+//			}
+//		});
 
 		mediaPlay.setOnCompletionListener(new OnCompletionListener() {
 
@@ -483,4 +506,33 @@ public class PlaySongService extends Service {
 		}
 	};
 
+	/**
+	 * 获取当前播发音乐时长
+	 * @return
+	 */
+	public int getDuration(){
+		if(mediaPlay==null){
+			return -1;
+		}
+		return mediaPlay.getDuration();
+	}
+	/**
+	 * 获取当前进度时间
+	 * @param position 进度条位置
+	 * @return
+	 */
+	public int getCurrentDuration(int position){
+		if(mediaPlay==null){
+			return -1;
+		}
+		return position*mediaPlay.getDuration()/1000;
+	}
+
+	public Boolean getIsFirstStart() {
+		return isFirstStart;
+	}
+
+	public void setIsFirstStart(Boolean isFirstStart) {
+		this.isFirstStart = isFirstStart;
+	}
 }

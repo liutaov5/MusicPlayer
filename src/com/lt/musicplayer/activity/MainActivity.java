@@ -6,15 +6,20 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.lt.musicplayer.R;
+import com.lt.musicplayer.constants.MessageConstant;
 import com.lt.musicplayer.customview.CircleDrawable;
+import com.lt.musicplayer.db.LastSongDao;
 import com.lt.musicplayer.fragment.AlbumFragment;
 import com.lt.musicplayer.fragment.ArtistFragment;
 import com.lt.musicplayer.fragment.FolderFragment;
 import com.lt.musicplayer.fragment.MusicFragment;
+import com.lt.musicplayer.interfaces.OnMusicStatusChangeListener;
+import com.lt.musicplayer.model.LastSong;
 import com.lt.musicplayer.service.PlaySongService;
 import com.lt.musicplayer.service.ScanSongService;
-import com.lt.musicplayer.utils.ToastUtils;
+import com.lt.musicplayer.utils.MusicUtils;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -29,19 +34,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar.OnMenuItemClickListener;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity implements
 		OnNavigationItemSelectedListener, OnClickListener,
-		OnMenuItemClickListener {
+		OnMenuItemClickListener, OnMusicStatusChangeListener {
 
 	private Toolbar mToolbar;
 	private TabLayout mTab;
@@ -53,6 +58,15 @@ public class MainActivity extends BaseActivity implements
 	private String[] mTabText;
 	private FragmentPagerAdapter mAdapter;
 	private ImageView mUserHead;
+
+	private ImageView mMusicImage;
+	private TextView mMusicName;
+	private TextView mMusicArtist;
+	private ImageView mMusicMore;
+	private ImageView mMusicPlay;
+	private ImageView mMusicNext;
+	private ProgressBar mMusicProgress;
+	private RelativeLayout mBottomView;
 
 	@Override
 	protected void initView() {
@@ -72,28 +86,15 @@ public class MainActivity extends BaseActivity implements
 		mMusicPlay = (ImageView) findViewById(R.id.iv_music_play);
 		mMusicNext = (ImageView) findViewById(R.id.iv_music_next);
 		mMusicProgress = (ProgressBar) findViewById(R.id.pb_music_progressbar);
-//		setView();
-	}
+		mBottomView=(RelativeLayout)findViewById(R.id.rl_bottom_view);
 
-	
-	// @Override
-	// protected void onResume() {
-	// super.onResume();
-	// if (!PlaySongService.isShow) {
-	// if(mPlayService!=null){
-	// mPlayService.showPopupWindow();
-	// }else{
-	//
-	// }
-	//
-	// }
-	// }
+	}
 
 	@Override
 	protected void initData() {
 		mToolbar.setTitle("Music Player");
 		setSupportActionBar(mToolbar);
-		mToolbar.setNavigationIcon(R.drawable.ic_action_action_list);
+		mToolbar.setNavigationIcon(R.drawable.bt_localsonglist_move_press);
 
 		MusicFragment musicfragment = new MusicFragment();
 		ArtistFragment artistFragment = new ArtistFragment();
@@ -138,7 +139,11 @@ public class MainActivity extends BaseActivity implements
 		mNavigation.setNavigationItemSelectedListener(this);
 		mToolbar.setOnMenuItemClickListener(this);
 		mFloatButton.setOnClickListener(this);
-		setListener();
+		setMusicStatusChangeListener(this);
+		mMusicPlay.setOnClickListener(this);
+		mMusicNext.setOnClickListener(this);
+		mMusicMore.setOnClickListener(this);
+		mBottomView.setOnClickListener(this);
 		// mToolbar.setNavigationOnClickListener(new OnClickListener() {
 		//
 		// @Override
@@ -164,16 +169,27 @@ public class MainActivity extends BaseActivity implements
 		switch (v.getId()) {
 
 		case R.id.float_button:
-			if (mPlayService.isPause) {
-				Toast.makeText(MainActivity.this, "继续", Toast.LENGTH_SHORT)
-						.show();
+			if (PlaySongService.isPause) {
 				mPlayService.keepPlay();
 			} else {
-				Toast.makeText(MainActivity.this, "暂停", Toast.LENGTH_SHORT)
-						.show();
 				mPlayService.pauseMusic();
 			}
-
+			break;
+		case R.id.iv_music_next:
+			mPlayService.playNext();
+			break;
+		case R.id.iv_music_play:
+			if (PlaySongService.isPause) {
+				mPlayService.keepPlay();
+			} else {
+				mPlayService.pauseMusic();
+			}
+			break;
+		case R.id.rl_bottom_view:
+			Intent intent=new Intent(mContext, MusicPlayerActivity.class);
+			intent.putExtra(MessageConstant.SONG_NAME, mMusicName.getText());
+			intent.putExtra(MessageConstant.SONG_ARTIST, mMusicArtist.getText());
+			startActivity(intent);
 			break;
 		default:
 			break;
@@ -226,6 +242,7 @@ public class MainActivity extends BaseActivity implements
 	 */
 	private static Boolean isExit = false;
 
+	@SuppressWarnings("unused")
 	private void exitBy2Click() {
 		Timer tExit = null;
 		if (isExit == false) {
@@ -244,12 +261,78 @@ public class MainActivity extends BaseActivity implements
 		}
 	}
 
+	/**
+	 * 设置最下方播放条目的view
+	 */
+	private void setView() {
+
+		LastSongDao lastSongDao = new LastSongDao(this);
+		List<LastSong> song;
+		try {
+			song = lastSongDao.findAllData();
+			if (song != null && song.size() > 0) {
+				mMusicArtist.setText(song.get(0).getArtist());
+				mMusicName.setText(song.get(0).getTitle());
+				mMusicImage.setImageBitmap(MusicUtils.getAlbumBitmap(mContext,
+						song.get(0).getId(), song.get(0).getAlbumId(), true,
+						true));
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		if (PlaySongService.isPause != null && PlaySongService.isPause) {
+			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+		} else {
+			mMusicPlay.setImageResource(R.drawable.statusbar_close);
+		}
+
+	}
+
+	private void updateProgress(int position) {
+		mMusicProgress.setProgress(position);
+	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		initAlbumPicture();
 		setView();
+	}
+
+	@Override
+	public void onMusicPlay() {
+		mMusicPlay.setImageResource(R.drawable.statusbar_close);
+		setView();
+	}
+
+	@Override
+	public void onMusicStop() {
+		mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+	}
+
+	@Override
+	public void onMusicKeep() {
+		mMusicPlay.setImageResource(R.drawable.statusbar_close);
+	}
+
+	@Override
+	public void onMusicPause() {
+		mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+	}
+
+	@Override
+	public void onMusicNext() {
+		setView();
+	}
+
+	@Override
+	public void onMusicPre() {
+		setView();
+	}
+
+	@Override
+	public void onMusicUpdateProgress(int position) {
+		updateProgress(position);
 	}
 
 }

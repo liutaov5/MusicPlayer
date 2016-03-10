@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_bottom_view"
     android:layout_width="match_parent"
     android:layout_height="65dp"
     android:layout_gravity="bottom"
@@ -19,6 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small"
         android:layout_toRightOf="@id/iv_music_image"
+        android:layout_toEndOf="@id/iv_music_image"
         android:singleLine="true"
         android:text="欢迎使用" />
 
@@ -30,6 +32,7 @@
         android:layout_below="@id/tv_music_name"
         android:layout_marginTop="@dimen/spacing_tiny"
         android:layout_toRightOf="@id/iv_music_image"
+        android:layout_toEndOf="@id/iv_music_image"
         android:singleLine="true"
         android:text="MusicPlayer" />
 
@@ -37,6 +40,7 @@
         android:id="@+id/iv_music_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
         android:layout_margin="@dimen/spacing_small"
@@ -49,6 +53,7 @@
         android:layout_centerInParent="true"
         android:layout_margin="@dimen/spacing_small"
         android:layout_toLeftOf="@id/iv_music_next"
+        android:layout_toStartOf="@id/iv_music_next"
         android:src="@drawable/statusbar_btn_play" />
 
     <ImageView
@@ -58,6 +63,7 @@
         android:layout_centerInParent="true"
         android:layout_margin="@dimen/spacing_small"
         android:layout_toLeftOf="@id/iv_music_play"
+        android:layout_toStartOf="@id/iv_music_play"
         android:src="@drawable/ic_action_action_list" />
 
     <ProgressBar

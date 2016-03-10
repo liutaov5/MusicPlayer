@@ -18,4 +18,7 @@ public class MessageConstant {
 	public final static String ACTION_PAUSE="action_pause";
 	public final static String ACTION_NEXT_PLAY="action_next_play";
 	public final static String ACTION_PRE_PLAY="action_pre_play";
+	
+	public final static String SONG_NAME="song_name";
+	public final static String SONG_ARTIST="song_artist";
 }
