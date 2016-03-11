@@ -14,6 +14,8 @@ import com.lt.musicplayer.model.Song;
 import com.lt.musicplayer.utils.ToastUtils;
 import com.lt.musicplayer.utils.UnitConverterUtils;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -30,12 +32,14 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +52,10 @@ public class PlaySongService extends Service {
 	private Boolean isFirstStart = true;
 	private static Boolean isKeepPlay = false;
 	private AudioManager mAudioManager;
+	
+	private NotificationManager mNotificationManager=null;
+	private RemoteViews mRemoteView=null;
+	private Notification mNotification;
 //	public static WindowManager mWindowManager = null;
 //	public static Boolean isLoading=true;
 
@@ -73,6 +81,7 @@ public class PlaySongService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		mNotificationManager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
 //		mWindowManager = (WindowManager) getApplicationContext()
 //				.getSystemService(Context.WINDOW_SERVICE);
@@ -192,6 +201,7 @@ public class PlaySongService extends Service {
 				}
 			}
 			if (isFirstStart) {
+				createNotification();
 				isFirstStart = false;
 			}
 			isFirstPlay = true;
@@ -534,5 +544,13 @@ public class PlaySongService extends Service {
 
 	public void setIsFirstStart(Boolean isFirstStart) {
 		this.isFirstStart = isFirstStart;
+	}
+	
+	private void createNotification(){
+		NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
+		mRemoteView=new RemoteViews(getPackageName(), R.layout.window_music_play);
+		mBuilder.setContent(mRemoteView).setOngoing(true);
+		mNotification=mBuilder.build();
+		mNotificationManager.notify(1, mNotification);
 	}
 }
