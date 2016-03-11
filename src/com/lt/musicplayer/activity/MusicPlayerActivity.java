@@ -174,7 +174,7 @@ public class MusicPlayerActivity extends BaseActivity implements
 				mToolBar.setTitle(song.get(0).getTitle());
 				mEndTime.setText(UnitConverterUtils.durationToString((int) song
 						.get(0).getDuration()));
-				if(!mPlayService.getIsFirstStart()){
+				if(!PlaySongService.getIsFirstStart()){
 					mStartTime.setText(UnitConverterUtils
 							.durationToString((int) song.get(0).getProgress()));
 					mSeekBar.setProgress((int) song.get(0).getProgress() * 1000

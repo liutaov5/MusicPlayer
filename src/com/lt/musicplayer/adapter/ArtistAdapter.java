@@ -45,6 +45,7 @@ public class ArtistAdapter extends MyBaseAdapter<Artist> {
 		holder.count.setText(artist.getCount() + "首");
 		holder.more.setTag(artist);
 		holder.picture.setVisibility(View.VISIBLE);
+		holder.picture.setImageResource(R.drawable.people);
 		holder.more.setOnClickListener(new OnClickListener() {
 
 			@Override

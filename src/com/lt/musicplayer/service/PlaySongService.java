@@ -4,23 +4,27 @@ import java.io.IOException;
 import java.util.List;
 
 import com.lt.musicplayer.R;
-import com.lt.musicplayer.activity.BaseActivity;
+import com.lt.musicplayer.activity.MusicPlayerActivity;
 import com.lt.musicplayer.constants.MessageConstant;
+import com.lt.musicplayer.customview.CircleDrawable;
 import com.lt.musicplayer.db.LastSongDao;
 import com.lt.musicplayer.db.SongDao;
 import com.lt.musicplayer.manager.SongManager;
 import com.lt.musicplayer.model.LastSong;
 import com.lt.musicplayer.model.Song;
+import com.lt.musicplayer.utils.MusicUtils;
 import com.lt.musicplayer.utils.ToastUtils;
 import com.lt.musicplayer.utils.UnitConverterUtils;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -29,18 +33,9 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class PlaySongService extends Service {
@@ -49,55 +44,30 @@ public class PlaySongService extends Service {
 	private IBinder mBinder = new MyBinder();
 	public static Boolean isPause = true;
 	private static Boolean isFirstPlay = false;
-	private Boolean isFirstStart = true;
+	private static Boolean isFirstStart = true;
 	private static Boolean isKeepPlay = false;
+	private Boolean isCreateNotification = true;
 	private AudioManager mAudioManager;
-	
-	private NotificationManager mNotificationManager=null;
-	private RemoteViews mRemoteView=null;
-	private Notification mNotification;
-//	public static WindowManager mWindowManager = null;
-//	public static Boolean isLoading=true;
 
-//	/**
-//	 * 悬浮窗是否显示
-//	 */
-//	public static Boolean isShow = false;
-//	/**
-//	 * 用于判断是否在切换界面需要隐藏悬浮窗
-//	 */
-//	public static Boolean isInside = false;
-//
-//	private static View mView = null;
-//	private static ImageView mMusicImage;
-//	private static TextView mMusicName;
-//	private static TextView mMusicArtist;
-//	private static ImageView mMusicList;
-//	private static ImageView mMusicPlay;
-//	private static ImageView mMusicNext;
-//	private static ProgressBar mMusicProgress;
+	private NotificationManager mNotificationManager = null;
+	private RemoteViews mRemoteView = null;
+	private Notification mNotification;
+
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		mNotificationManager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-
-//		mWindowManager = (WindowManager) getApplicationContext()
-//				.getSystemService(Context.WINDOW_SERVICE);
-//		mView = LayoutInflater.from(getApplicationContext()).inflate(
-//				R.layout.window_music_play, null);
-//		mMusicImage = (ImageView) mView.findViewById(R.id.iv_music_image);
-//		mMusicName = (TextView) mView.findViewById(R.id.tv_music_name);
-//		mMusicArtist = (TextView) mView.findViewById(R.id.tv_music_artist);
-//		mMusicList = (ImageView) mView.findViewById(R.id.iv_music_list);
-//		mMusicPlay = (ImageView) mView.findViewById(R.id.iv_music_play);
-//		mMusicNext = (ImageView) mView.findViewById(R.id.iv_music_next);
-//		mMusicProgress = (ProgressBar) mView
-//				.findViewById(R.id.pb_music_progressbar);
-
+		mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		//为什么这个广播没用？
+		IntentFilter filter = new IntentFilter(
+				MessageConstant.ACTION_NOTIFICATION);
+		LocalBroadcastManager.getInstance(this).registerReceiver(mReciver,
+				filter);
+		initButtonReceiver();
 	}
 
+	@SuppressLint("HandlerLeak")
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -108,10 +78,9 @@ public class PlaySongService extends Service {
 				if (mediaPlay == null) {
 					return;
 				}
-				
+
 				int currentPosition = mediaPlay.getCurrentPosition();
 				int time = mediaPlay.getDuration();
-//				mMusicProgress.setProgress(currentPosition * 1000 / time);
 				LastSongDao lastSongDao = new LastSongDao(PlaySongService.this);
 				List<LastSong> song;
 				try {
@@ -136,10 +105,41 @@ public class PlaySongService extends Service {
 		}
 	};
 
+	private BroadcastReceiver mReciver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(MessageConstant.ACTION_NOTIFICATION)) {
+
+				switch (intent.getStringExtra(MessageConstant.NOTIFICATION_TAG)) {
+				case MessageConstant.NOTIFICATION_PLAY:
+					if (isPause) {
+						keepPlay();
+					} else {
+						pauseMusic();
+					}
+					break;
+				case MessageConstant.NOTIFICATION_NEXT:
+					playNext();
+					break;
+				case MessageConstant.NOTIFICATION_CLOSE:
+					mNotificationManager.cancel(1);
+					isCreateNotification = true;
+					break;
+
+				default:
+					break;
+				}
+			}
+		}
+	};
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		mAudioManager.abandonAudioFocus(audioFocusChangeListener);
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mReciver);
 		stopPlay();
 	}
 
@@ -184,7 +184,7 @@ public class PlaySongService extends Service {
 				Toast.makeText(this, "获取焦点失败", Toast.LENGTH_SHORT).show();
 				return;
 			}
-			
+
 			if (!isFirstPlay && isKeepPlay && !isFirstStart) {
 				isKeepPlay = false;
 				// 继续上次播放位置播放
@@ -200,11 +200,18 @@ public class PlaySongService extends Service {
 					e1.printStackTrace();
 				}
 			}
-			if (isFirstStart) {
+			if (isCreateNotification) {
 				createNotification();
+				// showButtonNotify();
+				isCreateNotification = false;
+			}
+			if (isFirstStart) {
 				isFirstStart = false;
 			}
-			isFirstPlay = true;
+			if (!isFirstPlay) {
+				isFirstPlay = true;
+			}
+
 			mediaPlay.start();
 			sendMusicBroadcast(MessageConstant.ACTION_PLAY);
 			saveLastSong(path);
@@ -212,7 +219,11 @@ public class PlaySongService extends Service {
 
 			// setView();
 			isPause = false;
-//			mMusicPlay.setImageResource(R.drawable.statusbar_close);
+			// mMusicPlay.setImageResource(R.drawable.statusbar_close);
+			setRemoteViews();
+			mRemoteView.setImageViewResource(R.id.iv_notify_play,
+					R.drawable.img_button_notification_play_pause);
+			mNotificationManager.notify(1, mNotification);
 			// 更新进度条
 			new Thread() {
 
@@ -240,13 +251,14 @@ public class PlaySongService extends Service {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 滚动进度条播发
+	 * 
 	 * @param position
 	 */
-	public void setProgress(int position){
-		mediaPlay.seekTo(position*mediaPlay.getDuration()/1000);
+	public void setProgress(int position) {
+		mediaPlay.seekTo(position * mediaPlay.getDuration() / 1000);
 	}
 
 	/**
@@ -271,7 +283,10 @@ public class PlaySongService extends Service {
 		if (!isPause && mediaPlay.isPlaying()) {
 			mediaPlay.pause();
 			isPause = true;
-//			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+			// mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+			mRemoteView.setImageViewResource(R.id.iv_notify_play,
+					R.drawable.img_button_notification_play_play);
+			mNotificationManager.notify(1, mNotification);
 		}
 	}
 
@@ -302,7 +317,10 @@ public class PlaySongService extends Service {
 		if (isPause && !mediaPlay.isPlaying()) {
 			mediaPlay.start();
 			isPause = false;
-//			mMusicPlay.setImageResource(R.drawable.statusbar_close);
+			// mMusicPlay.setImageResource(R.drawable.statusbar_close);
+			mRemoteView.setImageViewResource(R.id.iv_notify_play,
+					R.drawable.img_button_notification_play_pause);
+			mNotificationManager.notify(1, mNotification);
 		}
 	}
 
@@ -337,6 +355,11 @@ public class PlaySongService extends Service {
 		isPause = true;
 		if (mediaPlay == null) {
 			return;
+		}
+		mRemoteView.setImageViewResource(R.id.iv_notify_play,
+				R.drawable.img_button_notification_play_play);
+		if(!isCreateNotification){
+			mNotificationManager.notify(1, mNotification);
 		}
 		sendMusicBroadcast(MessageConstant.ACTION_STOP);
 		if (mediaPlay.isPlaying()) {
@@ -385,84 +408,10 @@ public class PlaySongService extends Service {
 		}
 	}
 
-	/**
-	 * 显示悬浮窗 最下面播放界面使用的悬浮窗形式显示的
-	 */
-	public void showPopupWindow() {
-		// setView();
-		// WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-		// params.type = WindowManager.LayoutParams.TYPE_PHONE;
-		// params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-		// params.format = PixelFormat.TRANSLUCENT;
-		// params.alpha = 0.9f;
-		// // 获取屏幕的大小
-		// Point outSize = new Point();
-		// mWindowManager.getDefaultDisplay().getSize(outSize);
-		// // 位置设为屏幕下方
-		// params.x = 0;
-		// params.y = outSize.y / 2;
-		// params.width = WindowManager.LayoutParams.MATCH_PARENT;
-		// params.height = UnitConverterUtils.dp2px(getApplicationContext(),
-		// 65);
-		// mWindowManager.addView(mView, params);
-		// isShow = true;
-	}
 
-//	/**
-//	 * 隐藏悬浮窗
-//	 */
-//	public void hidePopupWindow() {
-//		// if (isShow) {
-//		// mWindowManager.removeView(mView);
-//		// isShow = false;
-//		// }
-//	}
-//
-//	/**
-//	 * 设置最下方播放条目的view
-//	 */
-//	private void setView() {
-//
-//		LastSongDao lastSongDao = new LastSongDao(this);
-//		List<LastSong> song;
-//		try {
-//			song = lastSongDao.findAllData();
-//			if (song != null && song.size() > 0) {
-//				mMusicArtist.setText(song.get(0).getArtist());
-//				mMusicName.setText(song.get(0).getTitle());
-//			}
-//		} catch (Exception e1) {
-//			e1.printStackTrace();
-//		}
-//
-//		if (isPause) {
-//			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
-//		} else {
-//			mMusicPlay.setImageResource(R.drawable.statusbar_close);
-//		}
-//
-//	}
+
 
 	private void setListener() {
-//		mMusicPlay.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				if (isPause) {
-//					keepPlay();
-//				} else {
-//					pauseMusic();
-//				}
-//			}
-//		});
-//
-//		mMusicNext.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				playNext();
-//			}
-//		});
 
 		mediaPlay.setOnCompletionListener(new OnCompletionListener() {
 
@@ -518,39 +467,118 @@ public class PlaySongService extends Service {
 
 	/**
 	 * 获取当前播发音乐时长
+	 * 
 	 * @return
 	 */
-	public int getDuration(){
-		if(mediaPlay==null){
+	public int getDuration() {
+		if (mediaPlay == null) {
 			return -1;
 		}
 		return mediaPlay.getDuration();
 	}
+
 	/**
 	 * 获取当前进度时间
-	 * @param position 进度条位置
+	 * 
+	 * @param position
+	 *            进度条位置
 	 * @return
 	 */
-	public int getCurrentDuration(int position){
-		if(mediaPlay==null){
+	public int getCurrentDuration(int position) {
+		if (mediaPlay == null) {
 			return -1;
 		}
-		return position*mediaPlay.getDuration()/1000;
+		return position * mediaPlay.getDuration() / 1000;
 	}
 
-	public Boolean getIsFirstStart() {
+	public static Boolean getIsFirstStart() {
 		return isFirstStart;
 	}
 
-	public void setIsFirstStart(Boolean isFirstStart) {
-		this.isFirstStart = isFirstStart;
-	}
-	
-	private void createNotification(){
-		NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(this);
-		mRemoteView=new RemoteViews(getPackageName(), R.layout.window_music_play);
-		mBuilder.setContent(mRemoteView).setOngoing(true);
-		mNotification=mBuilder.build();
+	private void createNotification() {
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+				this);
+		mRemoteView = new RemoteViews(getPackageName(),
+				R.layout.notification_view);
+		setRemoteViews();
+
+		Intent intent = new Intent(MessageConstant.ACTION_NOTIFICATION);
+		intent.putExtra(MessageConstant.NOTIFICATION_TAG,
+				MessageConstant.NOTIFICATION_PLAY);
+		PendingIntent playIntent = PendingIntent.getBroadcast(this, 1, intent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+		mRemoteView.setOnClickPendingIntent(R.id.iv_notify_play, playIntent);
+
+		intent.putExtra(MessageConstant.NOTIFICATION_TAG,
+				MessageConstant.NOTIFICATION_NEXT);
+		PendingIntent nextIntent = PendingIntent.getBroadcast(this, 2, intent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+		mRemoteView.setOnClickPendingIntent(R.id.iv_notify_next, nextIntent);
+
+		intent.putExtra(MessageConstant.NOTIFICATION_TAG,
+				MessageConstant.NOTIFICATION_CLOSE);
+		PendingIntent closeIntent = PendingIntent.getBroadcast(this, 3, intent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+		mRemoteView.setOnClickPendingIntent(R.id.iv_notify_cancel, closeIntent);
+
+		Intent intent2 = new Intent(this, MusicPlayerActivity.class);
+		intent2.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 4,
+				intent2, PendingIntent.FLAG_CANCEL_CURRENT);
+		mBuilder.setContent(mRemoteView).setOngoing(true)
+				.setSmallIcon(R.drawable.lt_icon)
+				.setContentIntent(pendingIntent);
+		mNotification = mBuilder.build();
 		mNotificationManager.notify(1, mNotification);
+	}
+
+	private void setRemoteViews() {
+		LastSong song = SongManager.getInstance(this).getLastSong();
+		mRemoteView.setTextViewText(R.id.tv_music_name, song.getTitle());
+		mRemoteView.setTextViewText(R.id.tv_music_artist, song.getArtist());
+		CircleDrawable circleDrawable = new CircleDrawable(
+				MusicUtils.getAlbumBitmap(this, song.getId(),
+						song.getAlbumId(), true, true));
+		mRemoteView.setImageViewBitmap(R.id.iv_music_image,
+				UnitConverterUtils.drawableToBitmap(circleDrawable));
+	}
+
+	NotificationCompat.Builder mBuilder;
+	public ButtonBroadcastReceiver bReceiver;
+
+	public void initButtonReceiver() {
+		bReceiver = new ButtonBroadcastReceiver();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(MessageConstant.ACTION_NOTIFICATION);
+		registerReceiver(bReceiver, intentFilter);
+	}
+
+	public class ButtonBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(MessageConstant.ACTION_NOTIFICATION)) {
+				switch (intent.getStringExtra(MessageConstant.NOTIFICATION_TAG)) {
+				case MessageConstant.NOTIFICATION_PLAY:
+					if (isPause) {
+						keepPlay();
+					} else {
+						pauseMusic();
+					}
+					break;
+				case MessageConstant.NOTIFICATION_NEXT:
+					playNext();
+					break;
+				case MessageConstant.NOTIFICATION_CLOSE:
+					mNotificationManager.cancel(1);
+					isCreateNotification = true;
+					stopPlay();
+					break;
+				default:
+					break;
+				}
+			}
+		}
 	}
 }

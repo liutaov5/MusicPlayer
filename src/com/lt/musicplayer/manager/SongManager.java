@@ -4,8 +4,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lt.musicplayer.db.LastSongDao;
 import com.lt.musicplayer.db.SongDao;
+import com.lt.musicplayer.model.LastSong;
 import com.lt.musicplayer.model.Song;
+import com.lt.musicplayer.utils.ToastUtils;
 
 import android.content.Context;
 import android.util.SparseArray;
@@ -96,7 +99,7 @@ public class SongManager {
 		for (int i = 0; i < mSongList.size(); i++) {
 			if (mCurrentUrl.equals(mSongList.get(i).getUrl())) {
 				return i + 1 == mSongList.size() ? mSongList.get(0).getUrl()
-						: mSongList.get(i - 1).getUrl();
+						: mSongList.get(i + 1).getUrl();
 			}
 		}
 
@@ -113,8 +116,8 @@ public class SongManager {
 
 		for (int i = 0; i < mSongList.size(); i++) {
 			if (mCurrentUrl.equals(mSongList.get(i).getUrl())) {
-				return i + 1 == mSongList.size() ? mSongList.get(0).getUrl()
-						: mSongList.get(i + 1).getUrl();
+				return i  == 0 ? mSongList.get(mSongList.size()-1).getUrl()
+						: mSongList.get(i - 1).getUrl();
 			}
 		}
 
@@ -139,6 +142,26 @@ public class SongManager {
 
 	public void setmCurrentUrl(String mCurrentUrl) {
 		this.mCurrentUrl = mCurrentUrl;
+	}
+	
+	/**
+	 * 获取当前的歌曲
+	 * @return
+	 */
+	public  LastSong getLastSong(){
+		LastSongDao lastSongDao = new LastSongDao(mContext);
+		List<LastSong> song;
+		try {
+			song = lastSongDao.findAllData();
+			if (song != null && song.size() > 0) {
+				return song.get(0);
+			} else {
+				return null;
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			return null;
+		}
 	}
 
 }

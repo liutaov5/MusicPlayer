@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent" >
+
+    <ImageView
+        android:id="@+id/iv_music_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="@dimen/spacing_tiny"
+        android:layout_centerVertical="true"
+        android:src="@drawable/img_album_background" />
+
+    <TextView
+        android:id="@+id/tv_music_name"
+        style="@style/text_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_music_image"
+        android:layout_toEndOf="@id/iv_music_image"
+        android:layout_alignTop="@id/iv_music_image"
+        android:singleLine="true"
+        android:text="欢迎使用" />
+
+    <TextView
+        android:id="@+id/tv_music_artist"
+        style="@style/text_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_music_name"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:layout_toRightOf="@id/iv_music_image"
+        android:layout_toEndOf="@id/iv_music_image"
+        android:singleLine="true"
+        android:text="MusicPlayer" />
+
+    <ImageView
+        android:id="@+id/iv_notify_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/spacing_small"
+        android:src="@drawable/statusbar_close" />
+
+    <ImageView
+        android:id="@+id/iv_notify_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/spacing_small"
+        android:layout_toLeftOf="@id/iv_notify_cancel"
+        android:layout_toStartOf="@id/iv_notify_cancel"
+        android:src="@drawable/statusbar_btn_next" />
+
+    <ImageView
+        android:id="@+id/iv_notify_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/spacing_small"
+        android:layout_toLeftOf="@id/iv_notify_next"
+        android:layout_toStartOf="@id/iv_notify_next"
+        android:src="@drawable/statusbar_btn_play" />
+
+</RelativeLayout>

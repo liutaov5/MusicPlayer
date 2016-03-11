@@ -47,6 +47,7 @@ public class FolderAdapter extends MyBaseAdapter<Folder> {
 		holder.count.setText(folder.getCount() + "首 " + folder.getPath());
 		holder.more.setTag(folder);
 		holder.picture.setVisibility(View.VISIBLE);
+		holder.picture.setImageResource(R.drawable.file);
 		holder.more.setOnClickListener(new OnClickListener() {
 
 			@Override

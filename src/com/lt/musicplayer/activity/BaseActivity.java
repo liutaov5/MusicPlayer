@@ -105,6 +105,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 				IntentFilter filterStop = new IntentFilter(MessageConstant.ACTION_STOP);
 				IntentFilter filterKeep = new IntentFilter(
 						MessageConstant.ACTION_KEEP_PLAY);
+				
 				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
 						filter);
 				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,

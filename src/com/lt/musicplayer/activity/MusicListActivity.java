@@ -161,9 +161,9 @@ public class MusicListActivity extends BaseActivity implements
 			e1.printStackTrace();
 		}
 		if (PlaySongService.isPause != null && PlaySongService.isPause) {
-			mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+			mMusicPlay.setImageResource(R.drawable.img_button_notification_play_play);
 		} else {
-			mMusicPlay.setImageResource(R.drawable.statusbar_close);
+			mMusicPlay.setImageResource(R.drawable.img_button_notification_play_pause);
 		}
 
 	}
@@ -181,23 +181,23 @@ public class MusicListActivity extends BaseActivity implements
 
 	@Override
 	public void onMusicPlay() {
-		mMusicPlay.setImageResource(R.drawable.statusbar_close);
+		mMusicPlay.setImageResource(R.drawable.img_button_notification_play_pause);
 		setView();
 	}
 
 	@Override
 	public void onMusicStop() {
-		mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+		mMusicPlay.setImageResource(R.drawable.img_button_notification_play_play);
 	}
 
 	@Override
 	public void onMusicKeep() {
-		mMusicPlay.setImageResource(R.drawable.statusbar_close);
+		mMusicPlay.setImageResource(R.drawable.img_button_notification_play_pause);
 	}
 
 	@Override
 	public void onMusicPause() {
-		mMusicPlay.setImageResource(R.drawable.statusbar_btn_play);
+		mMusicPlay.setImageResource(R.drawable.img_button_notification_play_play);
 	}
 
 	@Override
