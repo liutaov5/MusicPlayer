@@ -94,32 +94,44 @@ public abstract class BaseActivity extends AppCompatActivity {
 				// mView = LayoutInflater.from(getApplicationContext()).inflate(
 				// R.layout.window_music_play, null);
 
-				IntentFilter filter = new IntentFilter(MessageConstant.UPDATE_PROGRESS);
-				IntentFilter filterPlay = new IntentFilter(MessageConstant.ACTION_PLAY);
-				IntentFilter filterPause = new IntentFilter(
-						MessageConstant.ACTION_PAUSE);
-				IntentFilter filterNext = new IntentFilter(
-						MessageConstant.ACTION_NEXT_PLAY);
-				IntentFilter filterPre = new IntentFilter(
-						MessageConstant.ACTION_PRE_PLAY);
-				IntentFilter filterStop = new IntentFilter(MessageConstant.ACTION_STOP);
-				IntentFilter filterKeep = new IntentFilter(
-						MessageConstant.ACTION_KEEP_PLAY);
+//				IntentFilter filter = new IntentFilter(MessageConstant.UPDATE_PROGRESS);
+//				IntentFilter filterPlay = new IntentFilter(MessageConstant.ACTION_PLAY);
+//				IntentFilter filterPause = new IntentFilter(
+//						MessageConstant.ACTION_PAUSE);
+//				IntentFilter filterNext = new IntentFilter(
+//						MessageConstant.ACTION_NEXT_PLAY);
+//				IntentFilter filterPre = new IntentFilter(
+//						MessageConstant.ACTION_PRE_PLAY);
+//				IntentFilter filterStop = new IntentFilter(MessageConstant.ACTION_STOP);
+//				IntentFilter filterKeep = new IntentFilter(
+//						MessageConstant.ACTION_KEEP_PLAY);
+				//注册广播
+				IntentFilter intentFilter = new IntentFilter();
+				intentFilter.addAction(MessageConstant.UPDATE_PROGRESS);
+				intentFilter.addAction(MessageConstant.ACTION_PLAY);
+				intentFilter.addAction(MessageConstant.ACTION_PAUSE);
+				intentFilter.addAction(MessageConstant.ACTION_NEXT_PLAY);
+				intentFilter.addAction(MessageConstant.ACTION_PRE_PLAY);
+				intentFilter.addAction(MessageConstant.ACTION_STOP);
+				intentFilter.addAction(MessageConstant.ACTION_KEEP_PLAY);
 				
 				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-						filter);
-				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-						filterPlay);
-				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-						filterPause);
-				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-						filterNext);
-				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-						filterPre);
-				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-						filterStop);
-				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-						filterKeep);
+						intentFilter);
+				
+//				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
+//						filter);
+//				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
+//						filterPlay);
+//				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
+//						filterPause);
+//				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
+//						filterNext);
+//				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
+//						filterPre);
+//				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
+//						filterStop);
+//				LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
+//						filterKeep);
 	}
 	
 	/**
@@ -196,12 +208,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
 	}
 
-	public static void closeApp() {
+	protected void closeApp() {
 		for (Activity activity : mActivityList) {
 			if (activity != null) {
 				activity.finish();
 			}
 		}
+		mPlayService.stopPlayService();
 		System.exit(0);
 	}
 

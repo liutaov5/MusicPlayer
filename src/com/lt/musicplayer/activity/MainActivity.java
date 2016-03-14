@@ -18,6 +18,7 @@ import com.lt.musicplayer.model.LastSong;
 import com.lt.musicplayer.service.PlaySongService;
 import com.lt.musicplayer.service.ScanSongService;
 import com.lt.musicplayer.utils.MusicUtils;
+import com.lt.musicplayer.utils.ToastUtils;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -160,6 +161,16 @@ public class MainActivity extends BaseActivity implements
 	@Override
 	public boolean onNavigationItemSelected(MenuItem menuItem) {
 		menuItem.setChecked(true);
+		switch (menuItem.getItemId()) {
+		case R.id.nav_local_music:
+			ToastUtils.show(mContext, "本地音乐");
+			break;
+		case R.id.sub_exit:
+			closeApp();
+			break;
+		default:
+			break;
+		}
 		mDrawer.closeDrawers();
 		return true;
 	}

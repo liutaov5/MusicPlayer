@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="65dp"
     android:layout_gravity="bottom"
-    android:background="@color/white" >
+    android:background="@color/white" 
+    android:elevation="10dp">
 
     <ImageView
         android:id="@+id/iv_music_image"
@@ -64,7 +65,7 @@
         android:layout_margin="@dimen/spacing_small"
         android:layout_toLeftOf="@id/iv_music_play"
         android:layout_toStartOf="@id/iv_music_play"
-        android:src="@drawable/ic_action_action_list" />
+        android:src="@drawable/bt_localsonglist_move_nor" />
 
     <ProgressBar
         android:id="@+id/pb_music_progressbar"

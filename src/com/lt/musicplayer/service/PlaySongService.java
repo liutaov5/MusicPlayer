@@ -53,18 +53,22 @@ public class PlaySongService extends Service {
 	private RemoteViews mRemoteView = null;
 	private Notification mNotification;
 
-
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		//为什么这个广播没用？
+		// 为什么这个广播没用？
 		IntentFilter filter = new IntentFilter(
 				MessageConstant.ACTION_NOTIFICATION);
-		LocalBroadcastManager.getInstance(this).registerReceiver(mReciver,
-				filter);
-		initButtonReceiver();
+		// 使用LocalBroadcastManager注册接收不到广播，使用LocalBroadcastManager注册的广播，
+		//您在发送广播的时候务必使用LocalBroadcastManager.sendBroadcast(intent);否则您接收不到广播.
+		// LocalBroadcastManager.getInstance(this).registerReceiver(mReciver,
+		// filter);
+		// IntentFilter intentFilter = new IntentFilter();
+		// intentFilter.addAction(MessageConstant.ACTION_NOTIFICATION);
+		registerReceiver(mReciver, filter);
+		// initButtonReceiver();
 	}
 
 	@SuppressLint("HandlerLeak")
@@ -105,6 +109,12 @@ public class PlaySongService extends Service {
 		}
 	};
 
+	public void stopPlayService(){
+		
+		mNotificationManager.cancelAll();
+		stopSelf();
+	}
+	
 	private BroadcastReceiver mReciver = new BroadcastReceiver() {
 
 		@Override
@@ -139,7 +149,7 @@ public class PlaySongService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		mAudioManager.abandonAudioFocus(audioFocusChangeListener);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mReciver);
+		unregisterReceiver(mReciver);
 		stopPlay();
 	}
 
@@ -358,7 +368,7 @@ public class PlaySongService extends Service {
 		}
 		mRemoteView.setImageViewResource(R.id.iv_notify_play,
 				R.drawable.img_button_notification_play_play);
-		if(!isCreateNotification){
+		if (!isCreateNotification) {
 			mNotificationManager.notify(1, mNotification);
 		}
 		sendMusicBroadcast(MessageConstant.ACTION_STOP);
@@ -407,9 +417,6 @@ public class PlaySongService extends Service {
 			e.printStackTrace();
 		}
 	}
-
-
-
 
 	private void setListener() {
 
@@ -543,42 +550,42 @@ public class PlaySongService extends Service {
 				UnitConverterUtils.drawableToBitmap(circleDrawable));
 	}
 
-	NotificationCompat.Builder mBuilder;
-	public ButtonBroadcastReceiver bReceiver;
-
-	public void initButtonReceiver() {
-		bReceiver = new ButtonBroadcastReceiver();
-		IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(MessageConstant.ACTION_NOTIFICATION);
-		registerReceiver(bReceiver, intentFilter);
-	}
-
-	public class ButtonBroadcastReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			if (action.equals(MessageConstant.ACTION_NOTIFICATION)) {
-				switch (intent.getStringExtra(MessageConstant.NOTIFICATION_TAG)) {
-				case MessageConstant.NOTIFICATION_PLAY:
-					if (isPause) {
-						keepPlay();
-					} else {
-						pauseMusic();
-					}
-					break;
-				case MessageConstant.NOTIFICATION_NEXT:
-					playNext();
-					break;
-				case MessageConstant.NOTIFICATION_CLOSE:
-					mNotificationManager.cancel(1);
-					isCreateNotification = true;
-					stopPlay();
-					break;
-				default:
-					break;
-				}
-			}
-		}
-	}
+	// NotificationCompat.Builder mBuilder;
+//	public ButtonBroadcastReceiver bReceiver;
+//
+//	public void initButtonReceiver() {
+//		bReceiver = new ButtonBroadcastReceiver();
+//		IntentFilter intentFilter = new IntentFilter();
+//		intentFilter.addAction(MessageConstant.ACTION_NOTIFICATION);
+//		registerReceiver(mReciver, intentFilter);
+//	}
+//
+//	public class ButtonBroadcastReceiver extends BroadcastReceiver {
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			String action = intent.getAction();
+//			if (action.equals(MessageConstant.ACTION_NOTIFICATION)) {
+//				switch (intent.getStringExtra(MessageConstant.NOTIFICATION_TAG)) {
+//				case MessageConstant.NOTIFICATION_PLAY:
+//					if (isPause) {
+//						keepPlay();
+//					} else {
+//						pauseMusic();
+//					}
+//					break;
+//				case MessageConstant.NOTIFICATION_NEXT:
+//					playNext();
+//					break;
+//				case MessageConstant.NOTIFICATION_CLOSE:
+//					mNotificationManager.cancel(1);
+//					isCreateNotification = true;
+//					stopPlay();
+//					break;
+//				default:
+//					break;
+//				}
+//			}
+//		}
+//	}
 }
