@@ -12,6 +12,7 @@ import com.lt.musicplayer.db.SongDao;
 import com.lt.musicplayer.manager.SongManager;
 import com.lt.musicplayer.model.LastSong;
 import com.lt.musicplayer.model.Song;
+import com.lt.musicplayer.receiver.MediaButtonReceiver;
 import com.lt.musicplayer.utils.MusicUtils;
 import com.lt.musicplayer.utils.ToastUtils;
 import com.lt.musicplayer.utils.UnitConverterUtils;
@@ -22,6 +23,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -69,6 +71,8 @@ public class PlaySongService extends Service {
 		// intentFilter.addAction(MessageConstant.ACTION_NOTIFICATION);
 		registerReceiver(mReciver, filter);
 		// initButtonReceiver();
+		ComponentName componentName=new ComponentName(getPackageName(), MediaButtonReceiver.class.getName());
+		mAudioManager.registerMediaButtonEventReceiver(componentName);
 	}
 
 	@SuppressLint("HandlerLeak")
@@ -133,6 +137,9 @@ public class PlaySongService extends Service {
 				case MessageConstant.NOTIFICATION_NEXT:
 					playNext();
 					break;
+				case MessageConstant.NOTIFICATION_PRE:
+					playPre();
+					break;
 				case MessageConstant.NOTIFICATION_CLOSE:
 					mNotificationManager.cancel(1);
 					isCreateNotification = true;
@@ -149,6 +156,8 @@ public class PlaySongService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		mAudioManager.abandonAudioFocus(audioFocusChangeListener);
+		ComponentName componentName=new ComponentName(getPackageName(), MediaButtonReceiver.class.getName());
+		mAudioManager.unregisterMediaButtonEventReceiver(componentName);
 		unregisterReceiver(mReciver);
 		stopPlay();
 	}

@@ -25,5 +25,6 @@ public class MessageConstant {
 	public final static String NOTIFICATION_TAG="notification_tag";
 	public final static String NOTIFICATION_PLAY="notification_play";
 	public final static String NOTIFICATION_NEXT="notification_next";
+	public final static String NOTIFICATION_PRE="notification_pre";
 	public final static String NOTIFICATION_CLOSE="notification_close";
 }

@@ -50,6 +50,11 @@
         
         <service android:name=".service.ScanSongService"/>
         <service android:name=".service.PlaySongService"/>
+        <receiver android:name="com.lt.musicplayer.receiver.MediaButtonReceiver">
+            <intent-filter >
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
